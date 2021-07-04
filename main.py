@@ -236,7 +236,7 @@ async def event_command_error(ctx, error):
     raise error
 
 
-@bot.command(name='age', aliases=['стаж', 'срок'])
+@bot.command(name='age', aliases=['follow', 'стаж', 'срок'])
 async def cmd_age(ctx):
     t_id = await user_id(ctx.channel.name)
     f_id = await user_id(ctx.author.name)
@@ -282,6 +282,18 @@ async def cmd_info(ctx):
         await ctx.send(f"@{ctx.author.name} stream offline")
 
 
+@bot.command(name='tg', aliases=["телега"])
+async def cmd_tg(ctx, *args):
+    tg = {
+        "tesla_1856": "нет телеги",
+        "ya_ryadom": "https://t.me/Ya_ryadom"
+    }
+    channel = ctx.channel.name.lower()
+
+    if channel in tg:
+        await ctx.send(f"@{ctx.author.name}, {tg[channel]}")
+
+
 @bot.command(name='weather', aliases=["погода"])
 async def cmd_weather(ctx, *args):
     in_city = ' '.join(args)
@@ -322,15 +334,16 @@ def on_notification(data):
         channel_id = data["event"]["broadcaster_user_id"]
         channel_name = data["event"]["broadcaster_user_name"]
 
-        if channel in ["tesla_1856","ya_ryadom"]:
+        if channel in ["tesla_1856", "ya_ryadom"]:
             user = data["event"]["user_name"]
             ts = data["event"]["followed_at"]
             index = f"{channel.lower()}:follows:{user.lower()}"
 
-            if not index in db or user=='tesla_bot':
-                followers=asyncio.run_coroutine_threadsafe(bot.get_followers(channel_id),loop).result()
-                folowers_count=len(followers)
-                print(user+":"+str(folowers_count))
+            if not index in db or user == 'tesla_bot':
+                followers = asyncio.run_coroutine_threadsafe(
+                    bot.get_followers(user_id=channel_id, count=True),
+                    loop).result()
+                print(user + ":" + str(followers))
                 db[index] = ts
                 ws = bot._ws
                 send = asyncio.run_coroutine_threadsafe(
