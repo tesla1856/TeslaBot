@@ -343,13 +343,12 @@ def on_notification(data):
                 followers = asyncio.run_coroutine_threadsafe(
                     bot.get_followers(user_id=channel_id, count=True),
                     loop).result()
-                print(user + ":" + str(followers))
                 db[index] = ts
                 ws = bot._ws
                 send = asyncio.run_coroutine_threadsafe(
                     ws.send_privmsg(
                         channel,
-                        f"/me @{channel_name}, новый преследователь на канале! @{user}, welcome! KonCha <3 <3 <3"
+                        f"/me @{channel_name}, новый преследователь на канале ({followers})! @{user}, welcome! KonCha <3 <3 <3"
                     ), loop)
                 send.result()
                 return
