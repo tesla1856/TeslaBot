@@ -340,6 +340,7 @@ def on_notification(data):
             index = f"{channel.lower()}:follows:{user.lower()}"
 
             if not index in db or user == 'tesla_bot':
+                asyncio.run_coroutine_threadsafe(asyncio.sleep(3), loop).result()
                 followers = asyncio.run_coroutine_threadsafe(
                     bot.get_followers(user_id=channel_id, count=True),
                     loop).result()
