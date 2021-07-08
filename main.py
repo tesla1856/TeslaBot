@@ -270,7 +270,7 @@ async def cmd_ping(ctx):
     await ctx.send('pong')
 
 
-@bot.command(name='info')
+@bot.command(name='info', aliases=['uptime'])
 async def cmd_info(ctx):
     info = await bot.get_stream(ctx.channel.name)
     if info:
@@ -284,10 +284,7 @@ async def cmd_info(ctx):
 
 @bot.command(name='tg', aliases=["телега"])
 async def cmd_tg(ctx, *args):
-    tg = {
-        "tesla_1856": "нет телеги",
-        "ya_ryadom": "https://t.me/Ya_ryadom"
-    }
+    tg = {"tesla_1856": "нет телеги", "ya_ryadom": "https://t.me/Ya_ryadom"}
     channel = ctx.channel.name.lower()
 
     if channel in tg:
@@ -327,6 +324,36 @@ async def cmd_weather(ctx, *args):
     )
 
 
+@bot.command(name='song', aliases=["песня"])
+async def cmd_song(ctx):
+
+    channel = ctx.channel.name.lower()
+    vk_ids = {
+        "tesla_1856": 209649860,
+    }
+    if not channel in vk_ids:
+        return
+
+    url = "https://api.vk.com/method/users.get"
+    querystring = {
+        "user_ids": vk_ids[channel],
+        "fields": "status",
+        "access_token": os.environ['VK_ACCESS_TOKEN'],
+        "v": "5.131",
+    }
+    response = requests.request("GET", url, params=querystring)
+    info = response.json()
+    if not "response" in info or len(info["response"]) == 0:
+        return
+
+    info = info["response"][0]
+    if "status_audio" in info:
+        status_audio = info["status_audio"]
+        await ctx.send(
+            f'@{ctx.author.name}, сейчас играет: {status_audio["artist"]} - {status_audio["title"]}'
+        )
+
+
 def on_notification(data):
     if data["subscription"]["type"] == 'channel.follow' and data[
             "subscription"]["status"] == 'enabled':
@@ -340,7 +367,8 @@ def on_notification(data):
             index = f"{channel.lower()}:follows:{user.lower()}"
 
             if not index in db or user == 'tesla_bot':
-                asyncio.run_coroutine_threadsafe(asyncio.sleep(3), loop).result()
+                asyncio.run_coroutine_threadsafe(asyncio.sleep(3),
+                                                 loop).result()
                 followers = asyncio.run_coroutine_threadsafe(
                     bot.get_followers(user_id=channel_id, count=True),
                     loop).result()
