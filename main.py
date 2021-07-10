@@ -5,10 +5,11 @@ import os
 from twitchio.ext import commands
 from twitchio.ext.commands.errors import CommandNotFound
 import twitchio
-import traceback
-import sys
+#import traceback
+#import sys
 import re
 import asyncio
+import json
 from datetime import datetime, timezone
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
@@ -283,12 +284,21 @@ async def cmd_info(ctx):
 
 
 @bot.command(name='tg', aliases=["телега"])
-async def cmd_tg(ctx, *args):
-    tg = {"tesla_1856": "нет телеги", "ya_ryadom": "https://t.me/Ya_ryadom"}
+async def cmd_tg(ctx):
+    tg = json.loads(os.environ['MAP_TG'])
     channel = ctx.channel.name.lower()
 
     if channel in tg:
         await ctx.send(f"@{ctx.author.name}, {tg[channel]}")
+
+
+@bot.command(name='discord', aliases=["дискорд"])
+async def cmd_discord(ctx):
+    disc = json.loads(os.environ['MAP_DISCORD'])
+    channel = ctx.channel.name.lower()
+
+    if channel in disc:
+        await ctx.send(f"@{ctx.author.name}, {disc[channel]}")
 
 
 @bot.command(name='weather', aliases=["погода"])
@@ -328,9 +338,7 @@ async def cmd_weather(ctx, *args):
 async def cmd_song(ctx):
 
     channel = ctx.channel.name.lower()
-    vk_ids = {
-        "tesla_1856": 209649860,
-    }
+    vk_ids = json.loads(os.environ['MAP_VK'])
     if not channel in vk_ids:
         return
 
