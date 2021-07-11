@@ -301,6 +301,13 @@ async def cmd_discord(ctx):
         await ctx.send(f"@{ctx.author.name}, {disc[channel]}")
 
 
+@bot.command(name='goose', aliases=["гусь"])
+async def cmd_goose(ctx):
+    await ctx.send(
+        "ЗАПУСКАЕМ ░ГУСЯ░▄▀▀▀▄░РАБОТЯГИ░░ ▄███▀░◐░░░▌░░░░░░░ ░░░░▌░░░░░▐░░░░░░░ ░░░░▐░░░░░▐░░░░░░░ ░░░░▌░░░░░▐▄▄░░░░░ ░░░░▌░░░░▄▀▒▒▀▀▀▀▄ ░░░▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄ ░░░▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄ ░░░░▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄ ░░░░░░▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄ ░░░░░░░░░░░▌▌▌▌░░░░░ ░░░░░░░░░░░▌▌░▌▌░░░░░ ░░░░░░░░░▄▄▌▌▄▌▌░░░░░"
+    )
+
+
 @bot.command(name='weather', aliases=["погода"])
 async def cmd_weather(ctx, *args):
     in_city = ' '.join(args)
