@@ -218,6 +218,36 @@ async def event_message(ctx):
 @bot.event
 async def event_raw_usernotice(channel, tags: dict):
     print("usernotice>" + str(tags))
+    """
+    https://dev.twitch.tv/docs/irc/tags#usernotice-twitch-tags
+    подписка с помощью Prime, data:
+    {
+    'badge-info': '',
+    'badges': 'premium/1',
+    'color': '#0036CC',
+    'display-name': 'stephendguo',
+    'emotes': '',
+    'flags': '',
+    'id': '6ae9b5c0-2d1a-452f-b79a-815a797650f3',
+    'login': 'stephendguo',
+    'mod': 0,
+    'msg-id': 'sub',
+    'msg-param-cumulative-months': 1,
+    'msg-param-months': 0,
+    'msg-param-multimonth-duration': 0,
+    'msg-param-multimonth-tenure': 0,
+    'msg-param-should-share-streak': 0,
+    'msg-param-sub-plan-name': 'Channel\\sSubscription\\s(ya_ryadom)',
+    'msg-param-sub-plan': 'Prime',
+    'msg-param-was-gifted': 'false',
+    'room-id': 30650213,
+    'subscriber': 1,
+    'system-msg': 'stephendguo\\ssubscribed\\swith\\sPrime.',
+    'tmi-sent-ts': 1626032253544,
+    'user-id': 107321220,
+    'user-type': ''
+    }
+    """
 
 
 #@bot.event
@@ -254,6 +284,7 @@ async def cmd_age(ctx):
         await ctx.send(
             f'@{ctx.author.name}, ты преследуешь стримера уже - ' +
             (f' лет: {rdelta.years}, ' if rdelta.years > 0 else '') +
+            (f' месяцев: {rdelta.months}, ' if rdelta.months > 0 else '') +
             f' дней: {rdelta.days}')
     else:
         await ctx.send(
@@ -306,6 +337,15 @@ async def cmd_goose(ctx):
     await ctx.send(
         "ЗАПУСКАЕМ ░ГУСЯ░▄▀▀▀▄░РАБОТЯГИ░░ ▄███▀░◐░░░▌░░░░░░░ ░░░░▌░░░░░▐░░░░░░░ ░░░░▐░░░░░▐░░░░░░░ ░░░░▌░░░░░▐▄▄░░░░░ ░░░░▌░░░░▄▀▒▒▀▀▀▀▄ ░░░▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄ ░░░▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄ ░░░░▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄ ░░░░░░▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄ ░░░░░░░░░░░▌▌▌▌░░░░░ ░░░░░░░░░░░▌▌░▌▌░░░░░ ░░░░░░░░░▄▄▌▌▄▌▌░░░░░"
     )
+
+
+@bot.command(name='table', aliases=["таблица"])
+async def cmd_ефиду(ctx):
+    channel = ctx.channel.name.lower()
+    if channel in ("ya_ryadom", "tesla_1856"):
+        await ctx.send(
+            f"@{ctx.author.name}, https://docs.google.com/spreadsheets/d/1Bw3o1dBzCGMRC-voWEX_EIEdvv_uyPOkFrjIr-qeAhs"
+        )
 
 
 @bot.command(name='weather', aliases=["погода"])
