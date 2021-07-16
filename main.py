@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
 from replit import db
+from replit import database
 from random import randint
 import requests
 
@@ -65,6 +66,25 @@ async def user_id(user_login):
         await cache_users([user_login])
     return USERS[user_login].id
 
+### funcfor partitioning by key. Only 5K records in db limit.
+def db_add_item_part(prefix: str, key: str, value: str):
+    i = prefix + ':' + key[0]
+    old = db.get(i)
+    if old:
+        old = database.to_primitive(db[i])
+        db[i] = {**old, key: value}
+    else:
+        db[i] = {key: value}
+
+
+def db_get_item_part(prefix: str, key: str):
+    i = prefix + ':' + key[0]
+    d=db.get(i)
+    if d:
+        return database.to_primitive(d).get(key)
+    else:
+        return None
+###
 
 async def say_after(delay, what):
     await asyncio.sleep(delay)
@@ -421,24 +441,26 @@ def on_notification(data):
             ts = data["event"]["followed_at"]
             index = f"{channel.lower()}:follows:{user.lower()}"
 
-            if not index in db or user == 'tesla_bot':
+            msg = ""
+            if not index in db:
                 asyncio.run_coroutine_threadsafe(asyncio.sleep(3),
                                                  loop).result()
                 followers = asyncio.run_coroutine_threadsafe(
                     bot.get_followers(user_id=channel_id, count=True),
                     loop).result()
                 db[index] = ts
+                msg = f"/me @{channel_name}, новый преследователь на канале ({followers})! @{user}, welcome! KonCha <3 <3 <3"
+            else:
+                msg = f"/me {user} захотел преследовать стримера повторно. Welcome back! KonCha <3 <3 <3"
+
+            if msg != "":
                 ws = bot._ws
-                send = asyncio.run_coroutine_threadsafe(
+                asyncio.run_coroutine_threadsafe(
                     ws.send_privmsg(
                         channel,
-                        f"/me @{channel_name}, новый преследователь на канале ({followers})! @{user}, welcome! KonCha <3 <3 <3"
-                    ), loop)
-                send.result()
-                return
-            else:
-                #print(f"{user} on {channel} already follow")
-                return
+                        msg,
+                    ), loop).result()
+            return
         else:
             return
 
