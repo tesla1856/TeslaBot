@@ -1,11 +1,11 @@
 #for ping from https://uptimerobot.com/
 #https://www.youtube.com/watch?v=SPTfmiYiuok&t=365s
 
-from flask import Flask
-from flask import request
+from flask import Flask, request, redirect
 from threading import Thread
 
 import asyncio
+import os
 
 app = Flask(__name__)
 timers = {}
@@ -18,7 +18,26 @@ def sync_exec(coro):
 
 @app.route('/')
 def pong():
-    return "pong"
+    #print(request.args)
+    return "<script> if (document.location.href.startsWith('" + os.environ[
+        'URL'] + "#')) {document.location.href = document.location.href.replace('" + os.environ[
+            'URL'] + "#','" + os.environ['URL'] + "register?')}</script> OK"
+
+
+@app.route('/user_token')
+def user_token():
+    #print(request.args)
+    return redirect(
+        "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id="
+        + os.environ['CLIENT_ID'] + "&redirect_uri" + os.environ['URL'] +
+        "&scope=channel:read:redemptions",
+        code=302)
+
+
+@app.route('/register')
+def register():
+    print(request.args)
+    return "OK"
 
 
 @app.route('/timers')

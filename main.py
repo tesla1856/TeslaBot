@@ -34,7 +34,7 @@ bot = commands.Bot(
     #api_token=os.environ['TMI_TOKEN'].split(":")[1],
     client_id=os.environ['CLIENT_ID'],
     client_secret=os.environ['CLIENT_SECRET'],
-    scopes=['channel:read:redemptions', 'channel:manage:redemptions'],
+    scopes=['channel:read:redemptions','user:read:email'],
     loop=loop,
     nick=bot_nick,
     prefix=os.environ['BOT_PREFIX'],
@@ -66,6 +66,7 @@ async def user_id(user_login):
         await cache_users([user_login])
     return USERS[user_login].id
 
+
 ### funcfor partitioning by key. Only 5K records in db limit.
 def db_add_item_part(prefix: str, key: str, value: str):
     i = prefix + ':' + key[0]
@@ -79,12 +80,15 @@ def db_add_item_part(prefix: str, key: str, value: str):
 
 def db_get_item_part(prefix: str, key: str):
     i = prefix + ':' + key[0]
-    d=db.get(i)
+    d = db.get(i)
     if d:
         return database.to_primitive(d).get(key)
     else:
         return None
+
+
 ###
+
 
 async def say_after(delay, what):
     await asyncio.sleep(delay)
@@ -103,6 +107,8 @@ async def make_eventsub_request(method, data=None, params=[("", "")]):
                                    url='/eventsub/subscriptions',
                                    params=params,
                                    json=data)
+        #print("\n==")
+        #print("token", bot.http.token)
     except twitchio.http.HTTPException as e:
         if e.args[2] != 409:  # уже есть подписка на событие
             print(e.args)
@@ -116,6 +122,7 @@ async def remove_event_sub():
     subs = await make_eventsub_request('GET')
     for s in subs:
         if s.get("id", "-") != "-":
+            print('delete', s["type"])
             await make_eventsub_request('DELETE', params=[("id", s["id"])])
 
 
@@ -131,6 +138,18 @@ async def event_sub():
         print(c, id)
         data = [
             {
+                "type": "channel.channel_points_custom_reward_redemption.add",
+                "version": "1",
+                "condition": {
+                    "broadcaster_user_id": str(id)
+                },
+                "transport": {
+                    "method": "webhook",
+                    "callback": callback,
+                    "secret": secret
+                }
+            },
+            {
                 "type": "channel.follow",
                 "version": "1",
                 "condition": {
@@ -142,21 +161,10 @@ async def event_sub():
                     "secret": secret,
                 }
             },
-            #            {
-            #                "type": #"channel.channel_points_custom_reward_redemption.add",
-            #                "version": "1",
-            #                "condition": {
-            #                    "broadcaster_user_id": str(id)
-            #                },
-            #                "transport": {
-            #                    "method": "webhook",
-            #                    "callback": callback,
-            #                    "secret": secret
-            #                }
-            #            },
         ]
 
         for d in data:
+            print("add", d["type"], d["condition"]["broadcaster_user_id"])
             await make_eventsub_request('POST', data=d, params=[("", "")])
 
 
@@ -231,7 +239,7 @@ async def event_message(ctx):
         db["ya_ryadom:shhh"] = 1
         return
 
-    #print(ctx.channel.name, author, ctx.content)
+    # print(ctx.channel.name, author, ctx.content)
     await bot.handle_commands(ctx)
 
 
@@ -343,7 +351,7 @@ async def cmd_tg(ctx):
         await ctx.send(f"@{ctx.author.name}, {tg[channel]}")
 
 
-@bot.command(name='discord', aliases=["дискорд"])
+@bot.command(name='discord', aliases=["ds", "дискорд"])
 async def cmd_discord(ctx):
     disc = json.loads(os.environ['MAP_DISCORD'])
     channel = ctx.channel.name.lower()
@@ -463,6 +471,11 @@ def on_notification(data):
             return
         else:
             return
+    elif data["subscription"][
+            "type"] == 'channel.channel_points_custom_reward_redemption.add' and data[
+                "subscription"]["status"] == 'enabled':
+        print('channel.channel_points_custom_reward_redemption.add',
+              data["event"])
 
     print(data)
 
