@@ -29,7 +29,7 @@ def user_token():
     #print(request.args)
     return redirect(
         "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id="
-        + os.environ['CLIENT_ID'] + "&redirect_uri" + os.environ['URL'] +
+        + os.environ['CLIENT_ID'] + "&redirect_uri=" + os.environ['URL'] +
         "&scope=channel:read:redemptions",
         code=302)
 

@@ -34,7 +34,7 @@ bot = commands.Bot(
     #api_token=os.environ['TMI_TOKEN'].split(":")[1],
     client_id=os.environ['CLIENT_ID'],
     client_secret=os.environ['CLIENT_SECRET'],
-    scopes=['channel:read:redemptions','user:read:email'],
+    scopes=['channel:read:redemptions', 'user:read:email'],
     loop=loop,
     nick=bot_nick,
     prefix=os.environ['BOT_PREFIX'],
@@ -471,11 +471,21 @@ def on_notification(data):
             return
         else:
             return
+
     elif data["subscription"][
             "type"] == 'channel.channel_points_custom_reward_redemption.add' and data[
                 "subscription"]["status"] == 'enabled':
-        print('channel.channel_points_custom_reward_redemption.add',
-              data["event"])
+
+        channel = data["event"]["broadcaster_user_login"]
+        reward_id = data["event"]["reward"]["id"]
+
+        if reward_id in json.loads(os.environ['REWARDS_MUSIC']):
+            print(channel, data["event"]["user_input"])
+            return
+
+        if reward_id in ['31479d57-cd2f-46f6-ba01-48d78fc0b1f7']:
+            print(channel, "Shhh...")
+            return
 
     print(data)
 
