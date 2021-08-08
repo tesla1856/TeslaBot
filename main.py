@@ -295,34 +295,34 @@ async def event_command_error(ctx, error):
     raise error
 
 
-@bot.command(name='age', aliases=['follow', 'стаж', 'срок'])
-async def cmd_age(ctx):
-    t_id = await user_id(ctx.channel.name)
-    f_id = await user_id(ctx.author.name)
+#@bot.command(name='age', aliases=['follow', 'стаж', 'срок'])
+#async def cmd_age(ctx):
+#    t_id = await user_id(ctx.channel.name)
+#    f_id = await user_id(ctx.author.name)
+#
+#    if t_id == f_id:
+#        await ctx.send(f'@{ctx.author.name}, Kappa')
+#        return
+#
+#    info = await bot.get_follow(f_id, t_id)
+#    if info:
+#        rdelta = relativedelta(datetime.now(timezone.utc),
+#                               dateutil.parser.parse(info["followed_at"]#))
+#
+#        await ctx.send(
+#            f'@{ctx.author.name}, ты преследуешь стримера уже - ' +
+#            (f' лет: {rdelta.years}, ' if rdelta.years > 0 else '') +
+#            (f' месяцев: {rdelta.months}, ' if rdelta.months > 0 else #'') +
+#            f' дней: {rdelta.days}')
+#    else:
+#        await ctx.send(
+#            f'@{ctx.author.name}, PogChamp а ну-ка быстро подписался на #этот канал! :)'
+#        )
 
-    if t_id == f_id:
-        await ctx.send(f'@{ctx.author.name}, Kappa')
-        return
 
-    info = await bot.get_follow(f_id, t_id)
-    if info:
-        rdelta = relativedelta(datetime.now(timezone.utc),
-                               dateutil.parser.parse(info["followed_at"]))
-
-        await ctx.send(
-            f'@{ctx.author.name}, ты преследуешь стримера уже - ' +
-            (f' лет: {rdelta.years}, ' if rdelta.years > 0 else '') +
-            (f' месяцев: {rdelta.months}, ' if rdelta.months > 0 else '') +
-            f' дней: {rdelta.days}')
-    else:
-        await ctx.send(
-            f'@{ctx.author.name}, PogChamp а ну-ка быстро подписался на этот канал! :)'
-        )
-
-
-@bot.command(name='roll', aliases=['шанс'])
-async def cmd_roll(ctx):
-    await ctx.send(f'@{ctx.author.name}, {randint(0, 100)}')
+#@bot.command(name='roll', aliases=['шанс'])
+#async def cmd_roll(ctx):
+#    await ctx.send(f'@{ctx.author.name}, {randint(0, 100)}')
 
 
 @bot.command(name='ping')
@@ -330,16 +330,16 @@ async def cmd_ping(ctx):
     await ctx.send('pong')
 
 
-@bot.command(name='info', aliases=['uptime'])
-async def cmd_info(ctx):
-    info = await bot.get_stream(ctx.channel.name)
-    if info:
-        period = get_hours_period(info['started_at'])
-        await ctx.send(
-            f"@{ctx.author.name} стрим идет: {period}, зрителей: {info['viewer_count']}"
-        )
-    else:
-        await ctx.send(f"@{ctx.author.name} stream offline")
+#@bot.command(name='info', aliases=['uptime'])
+#async def cmd_info(ctx):
+#    info = await bot.get_stream(ctx.channel.name)
+#    if info:
+#        period = get_hours_period(info['started_at'])
+#        await ctx.send(
+#            f"@{ctx.author.name} стрим идет: {period}, зрителей: {info#['viewer_count']}"
+#        )
+#    else:
+#        await ctx.send(f"@{ctx.author.name} stream offline")
 
 
 @bot.command(name='tg', aliases=["телега"])
@@ -360,20 +360,20 @@ async def cmd_discord(ctx):
         await ctx.send(f"@{ctx.author.name}, {disc[channel]}")
 
 
-@bot.command(name='goose', aliases=["гусь"])
-async def cmd_goose(ctx):
-    await ctx.send(
-        "ЗАПУСКАЕМ ░ГУСЯ░▄▀▀▀▄░РАБОТЯГИ░░ ▄███▀░◐░░░▌░░░░░░░ ░░░░▌░░░░░▐░░░░░░░ ░░░░▐░░░░░▐░░░░░░░ ░░░░▌░░░░░▐▄▄░░░░░ ░░░░▌░░░░▄▀▒▒▀▀▀▀▄ ░░░▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄ ░░░▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄ ░░░░▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄ ░░░░░░▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄ ░░░░░░░░░░░▌▌▌▌░░░░░ ░░░░░░░░░░░▌▌░▌▌░░░░░ ░░░░░░░░░▄▄▌▌▄▌▌░░░░░"
-    )
+#@bot.command(name='goose', aliases=["гусь"])
+#async def cmd_goose(ctx):
+#    await ctx.send(
+#        "ЗАПУСКАЕМ ░ГУСЯ░▄▀▀▀▄░РАБОТЯГИ░░ ▄███▀░◐░░░▌░░░░░░░ #░░░░▌░░░░░▐░░░░░░░ ░░░░▐░░░░░▐░░░░░░░ ░░░░▌░░░░░▐▄▄░░░░░ #░░░░▌░░░░▄▀▒▒▀▀▀▀▄ ░░░▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄ ░░░▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄ #░░░░▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄ ░░░░░░▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄ #░░░░░░░░░░░▌▌▌▌░░░░░ ░░░░░░░░░░░▌▌░▌▌░░░░░ #░░░░░░░░░▄▄▌▌▄▌▌░░░░░"
+#    )
 
 
-@bot.command(name='table', aliases=["таблица"])
-async def cmd_ефиду(ctx):
-    channel = ctx.channel.name.lower()
-    if channel in ("ya_ryadom", "tesla_1856"):
-        await ctx.send(
-            f"@{ctx.author.name}, https://docs.google.com/spreadsheets/d/1Bw3o1dBzCGMRC-voWEX_EIEdvv_uyPOkFrjIr-qeAhs"
-        )
+#@bot.command(name='table', aliases=["таблица"])
+#async def cmd_ефиду(ctx):
+#    channel = ctx.channel.name.lower()
+#    if channel in ("ya_ryadom", "tesla_1856"):
+#        await ctx.send(
+#            f"@{ctx.author.name}, #https://docs.google.com/spreadsheets/d/1Bw3o1dBzCGMRC-voWEX_#EIEdvv_uyPOkFrjIr-qeAhs"
+#        )
 
 
 @bot.command(name='weather', aliases=["погода"])
